@@ -1,15 +1,19 @@
 import React from 'react'
-import Navbar from './components/Navbar'
-import ConfigBar from './components/ConfigBar'
-import KeyboardType from './components/KeyboardType'
 
+import { BrowserRouter, Routes, Route } from "react-router";
+import HomePage from './Pages/HomePage';
+import ProfilePage from './Pages/ProfilePage';
+import ResultPage from './Pages/ResultPage';
 function App() {
   return (
-    <>
-    <Navbar />
-    <ConfigBar />
-    <KeyboardType />
-    </>
+    <Routes>
+    
+    <Route path="" element={<HomePage />} />
+    <Route path="/profile" element={<ProfilePage />} />
+    <Route path="/result" element={<ResultPage />} />
+  
+    
+  </Routes>
   )
 }
 

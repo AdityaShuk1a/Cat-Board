@@ -4,13 +4,13 @@ const ConfigBar = () => {
   return (
     <>
       <div
-        className="configContainer w-screen flex justify-center items-center text-white"
+        className="configContainer opacity-0 md:opacity-[1] w-screen flex justify-center items-center text-white"
         style={{
           padding: "1rem 3rem",
         }}
       >
         <div className="configBar w-fit items-center justify-center text-white">
-          <div className="innerElementContainer bg-slate-600 flex gap-4 items-center justify-center rounded-[10px]" style={{
+          <div className="innerElementContainer bg-[#17181f] flex gap-4 items-center justify-center rounded-[10px]" style={{
             padding: "0.2rem 2rem",
           }} >
             <div className="typeCustom flex gap-4 items-center justify-center   "style={{

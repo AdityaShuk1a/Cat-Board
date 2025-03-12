@@ -5,10 +5,10 @@ const Navbar = () => {
   return (
     <>
     <nav className='flex w-screen justify-between items-center text-white font-semibold text-2xl'  style={{
-        padding: "2rem 3rem",
+        padding: "2rem 2rem",
     }} >
         <div className='logo  flex  items-center '>
-            <img src={logoImage} className='h-[8vh] ' alt="logoImage" />
+            <img src={logoImage} className='h-[4vh]  md:h-[8vh] ' alt="logoImage" />
             <div>
                 CatBoard
             </div>

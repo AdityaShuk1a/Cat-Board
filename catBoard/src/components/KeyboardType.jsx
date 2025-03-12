@@ -10,7 +10,7 @@ function KeyboardType() {
     content.split("").map((char, index) => ({
       id: index,
       char: char,
-      bold: false,
+      visited: false,
       isCorrect: true,
     }))
   );
@@ -30,13 +30,34 @@ function KeyboardType() {
       }
     );
   }, []);
+  useEffect(() => {
+    const handleTabPress = (event) => {
+      if (event.key === "Tab") {
+        event.preventDefault(); // Prevent default tab behavior (switching focus)
+        setUserInput("");
+        setCharArray((prev) =>
+          prev.map((obj) => ({
+            ...obj,
+            isCorrect: true,
+            visited: false,
+          }))
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleTabPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleTabPress);
+    };
+  }, []);
 
   const onKeyboardChange = (input) => {
     setCharArray((prevCharArray) =>
       prevCharArray.map((charObj, index) => ({
         ...charObj,
         isCorrect: index < input.length ? input[index] === charObj.char : true,
-        bold: index < input.length ? true : false,
+        visited: index < input.length ? true : true,
       }))
     );
   };
@@ -44,50 +65,60 @@ function KeyboardType() {
   return (
     <>
       <div
-        className="mainContainer relative w-[100%]  text-gray-400  flex justify-center"
+        className="mainContainer relative w-[100%] text-white   flex justify-center"
         style={{
           margin: "2rem 1rem",
           padding: "0 2.2rem",
         }}
       >
-        <div className="typeContent w-[80%] text-2xl text-blue-200 ">
+        <div className="typeContent w-[100%]  md:w-[80%] text-3xl md:text-2xl  ">
           {charArray.map((item, key) => {
-            if (item.id === userInput.length - 1 ) {   
+            if (item.id === userInput.length - 1) {
               return (
                 <>
                   <span
                     key={key}
                     className={`${
-                      item.isCorrect ? "text-white" : "text-red-500"
-                    }`}
+                      item.isCorrect ? "" : "text-red-500"
+                    }
+                   `}
                   >
                     {item.char}
                   </span>
-                  <span className={`cursorPointer ${isTyping ? "opacity-[1]" : "opacity-[0]"}`}>|</span>
+                  <span
+                    className={`cursorPointer ${
+                      isTyping ? "opacity-[1]" : "opacity-[0]"
+                    }`}
+                  >
+                    |
+                  </span>
                 </>
               );
-            }else if(isTyping && item.id === 0 && item.id === userInput.length){
+            } else if (
+              isTyping &&
+              item.id === 0 &&
+              item.id === userInput.length
+            ) {
               return (
                 <>
-                <span className="cursorPointer">|</span>
+                  <span className="cursorPointer">|</span>
                   <span
                     key={key}
                     className={`${
-                      item.isCorrect ? "text-white" : "text-red-500"
-                    }`}
+                      item.isCorrect ? "" : "text-red-500"
+                    }
+                   `}
                   >
                     {item.char}
                   </span>
-                  
                 </>
               );
             } else {
               return (
-
                 <span
                   key={key}
                   className={`${
-                    item.isCorrect ? "text-white" : "text-red-500"
+                    item.isCorrect && item.id < userInput.length ? "text-amber-200" : item.isCorrect ? "" : "text-red-500"
                   }`}
                 >
                   {item.char}
@@ -99,11 +130,11 @@ function KeyboardType() {
 
         <input
           type="text"
-          className="absolute top-0 w-[90%] bg-transparent decoration-0   text-transparent outline-none "
+          className="absolute top-0 w-[90%] h-[50vh] bg-transparent decoration-0  text-transparent outline-none "
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          onClick={()=>setIsTyping(true)}
-          onBlur={()=>setIsTyping(false)}
+          onClick={() => setIsTyping(true)}
+          onBlur={() => setIsTyping(false)}
           style={{
             padding: "0rem 2rem",
           }}
