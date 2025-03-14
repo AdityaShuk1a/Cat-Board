@@ -5,7 +5,6 @@ const ConfigBar = ({ changeTime, changeMode }) => {
   const [mode, setMode] = useState("time");
 
   useEffect(() => {
-    
     changeTime(time);
     changeMode(mode);
   }, [time, mode]);
@@ -31,10 +30,30 @@ const ConfigBar = ({ changeTime, changeMode }) => {
                 padding: "0 2rem",
               }}
             >
-              <div className="hover:text-gray-500" onClick={() => setMode("time")} >time</div>
-              <div className="hover:text-gray-500"  onClick={() => setMode("word")}>word</div>
-              <div className="hover:text-gray-500"  onClick={() => setMode("zen")}>zen</div>
-              <div className="hover:text-gray-500"  onClick={() => setMode("custom")}>custom</div>
+              <div
+                className="hover:text-gray-500"
+                onClick={() => setMode("time")}
+              >
+                time
+              </div>
+              <div
+                className="hover:text-gray-500"
+                onClick={() => setMode("word")}
+              >
+                word
+              </div>
+              <div
+                className="hover:text-gray-500"
+                onClick={() => setMode("zen")}
+              >
+                zen
+              </div>
+              <div
+                className="hover:text-gray-500"
+                onClick={() => setMode("custom")}
+              >
+                custom
+              </div>
             </div>
             <div
               className="timeSettings flex gap-4 items-center justify-center"
@@ -44,25 +63,33 @@ const ConfigBar = ({ changeTime, changeMode }) => {
             >
               <div
                 onClick={() => setTime(15)}
-                className={`${time === 15 ? "text-yellow-600" : ""} hover:text-gray-500 `}
+                className={`${
+                  time === 15 ? "text-yellow-600" : ""
+                } hover:text-gray-500 `}
               >
                 15
               </div>
               <div
                 onClick={() => setTime(30)}
-                className={`${time === 30 ? "text-yellow-600" : ""} hover:text-gray-500`}
+                className={`${
+                  time === 30 ? "text-yellow-600" : ""
+                } hover:text-gray-500`}
               >
                 30
               </div>
               <div
                 onClick={() => setTime(60)}
-                className={`${time === 60 ? "text-yellow-600" : ""} hover:text-gray-500`}
+                className={`${
+                  time === 60 ? "text-yellow-600" : ""
+                } hover:text-gray-500`}
               >
                 60
               </div>
               <div
                 onClick={() => setTime(120)}
-                className={`${time === 120 ? "text-yellow-600" : ""} hover:text-gray-500`}
+                className={`${
+                  time === 120 ? "text-yellow-600" : ""
+                } hover:text-gray-500`}
               >
                 120
               </div>

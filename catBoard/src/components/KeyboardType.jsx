@@ -144,7 +144,6 @@ function KeyboardType() {
             style={{
               margin: "0rem 1rem",
               padding: "0 2.2rem",
-             
             }}
           >
             <div className="typeContent w-[100%]  md:w-[80%] text-3xl md:text-4xl  ">
