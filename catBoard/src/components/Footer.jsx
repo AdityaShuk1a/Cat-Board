@@ -1,27 +1,47 @@
 import React from "react";
 
 function Footer() {
+
+  const shortcuts = [
+    {
+      id : 1,
+      shortcut : "tab",
+      description : "Restart Test"
+    },
+    {
+      id : 2,
+      shortcut : "Shift + Enter",
+      description : "Escape Zen Mode"
+    }
+  ]
+
   return (
     <>
       <div
-        className="w-screen fixed bottom-0 flex justify-center items-center gap-3"
+        className="w-screen fixed bottom-0 flex flex-col md:flex-row justify-center items-center gap-3"
         style={{
           marginBottom: "4rem",
           
         }}
       >
         <div>ShortCuts:</div>
-        <div className=" ">
+        {shortcuts.map((value) => {
+          return (
+            <div className=" ">
           <span
-            className="w-fit bg-[#db886f]"
+            className="w-fit bg-[#db886f] rounded-[10px]"
             style={{
               padding: "0.5vh",
             }}
           >
-            tab
+            {value.shortcut}
           </span>
-          <span> - Restart Test</span>
+          <span> - {value.description}</span>
         </div>
+          )
+          
+        })}
+        
       </div>
     </>
   );

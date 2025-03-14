@@ -5,6 +5,7 @@ import ResultPage from "../Pages/ResultPage";
 import Timer from "./Timer";
 import { use } from "react";
 function KeyboardType() {
+  const [mode, setMode] = useState("time");
   const [Speed, setSpeed] = useState(0);
   const [Accuracy, setAccuracy] = useState(0);
   const [time, setTime] = useState(15);
@@ -27,27 +28,17 @@ function KeyboardType() {
     if (userInput.length > 0) setIsTyping(true);
     if (userInput.length == 0) setIsTyping(false);
     if (userInput.length >= content.length) {
-      console.log(userInput.length) ;
-      setSpeed((userInput.length/(time)) * 10);
+      console.log(userInput.length);
+      setSpeed((userInput.length / time) * 10);
       const correctChars = charArray.filter((char) => char.isCorrect).length;
-      const accuracy = (correctChars / content.length) * 100
+      const accuracy = (correctChars / content.length) * 100;
       setAccuracy(accuracy);
-      setRenderResultPage(true)};
+      setRenderResultPage(true);
+    }
     onKeyboardChange(userInput);
     console.log(userInput);
   }, [userInput]);
-  useEffect(() => {
-    gsap.fromTo(
-      ".cursorPointer",
-      { opacity: 0 },
-      {
-        duration: 0.5,
-        opacity: 1,
-        repeat: -1,
-        yoyo: true,
-      }
-    );
-  }, []);
+
   useEffect(() => {
     const handleTabPress = (event) => {
       if (event.key === "Tab") {
@@ -70,17 +61,33 @@ function KeyboardType() {
       window.removeEventListener("keydown", handleTabPress);
     };
   }, []);
+  useEffect(() => {
+    const handleShiftEnter = (event) => {
+      if (event.key === "Enter" && event.shiftKey) {
+        changeMode("time");
+      }
+    };
 
+    window.addEventListener("keydown", handleShiftEnter);
+
+    return () => {
+      window.removeEventListener("keydown", handleShiftEnter);
+    };
+  }, []);
   const timesUp = () => {
-    const userSpeed = ((userInput.length/(time) )* 10) 
+    const userSpeed = (userInput.length / time) * 10;
     setSpeed(userSpeed);
-      const correctChars = charArray.filter((char) => char.isCorrect).length;
-      const accuracy = (correctChars / content.length) * 100
-      setAccuracy(accuracy);
+    const correctChars = charArray.filter((char) => char.isCorrect).length;
+    const accuracy = (correctChars / content.length) * 100;
+    setAccuracy(accuracy);
     setRenderResultPage(true);
   };
   const changeTime = (newTime) => {
     setTime(newTime);
+  };
+  const changeMode = (newMode) => {
+    console.log(newMode);
+    setMode(newMode);
   };
   const onKeyboardChange = (input) => {
     setCharArray((prevCharArray) =>
@@ -120,27 +127,24 @@ function KeyboardType() {
     };
   }, []);
 
-  // useEffect(()=>{
-  //   if(renderResultPage){
-  //     setSpeed(userInput.length/(time/60));
-  //     const correctChars = charArray.filter((char) => char.isCorrect).length;
-  //     setAccuracy((correctChars / content.length) * 100);
-  //   }
-  // }, [renderResultPage])
-
   return (
     <>
       {renderResultPage ? (
         <ResultPage Speed={Speed} Accuracy={Accuracy} />
       ) : (
         <>
-          <ConfigBar changeTime={changeTime} />
+          {!isTyping && mode != "zen" ? (
+            <ConfigBar changeTime={changeTime} changeMode={changeMode} />
+          ) : (
+            ""
+          )}
 
           <div
-            className="mainContainer relative w-[100%] text-white   flex justify-center"
+            className={`mainContainer relative w-[100%] text-white flex justify-center `}
             style={{
               margin: "2rem 1rem",
               padding: "0 2.2rem",
+              ...(mode === "zen" && { margin: "11rem 1rem" }),
             }}
           >
             <div className="typeContent w-[100%]  md:w-[80%] text-3xl md:text-4xl  ">
