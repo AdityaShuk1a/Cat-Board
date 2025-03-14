@@ -4,7 +4,7 @@ import logoImage from '../assets/catBoardLogo.png'
 const Navbar = () => {
   return (
     <>
-    <nav className='flex w-screen justify-between items-center text-white font-semibold text-2xl'  style={{
+    <nav className='flex w-screen justify-between items-center text-white font-semibold text-2xl md:text-4xl'  style={{
         padding: "2rem 2rem",
     }} >
         <div className='logo  flex  items-center '>
