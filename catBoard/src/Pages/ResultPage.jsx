@@ -3,7 +3,9 @@ import Navbar from "../components/Navbar";
 
 function ResultPage({ Speed, Accuracy }) {
   const [speed, setSpeed] = useState((Speed?.toString() || "0").slice(0, 2));
-  const [accuracy, setAccuracy] = useState((Accuracy?.toString() || "0").slice(0, 2));
+  const [accuracy, setAccuracy] = useState(
+    Accuracy === 100 ? "100" : (Accuracy?.toString() || "0").slice(0, 2)
+  );
 
   return (
     <>

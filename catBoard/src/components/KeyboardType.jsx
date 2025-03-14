@@ -140,11 +140,11 @@ function KeyboardType() {
           )}
 
           <div
-            className={`mainContainer relative w-[100%] text-white flex justify-center `}
+            className={`mainContainer   absolute top-[40%] left-[50%]  -translate-x-1/2 -translate-y-1/2 w-[100%] text-white flex justify-center `}
             style={{
-              margin: "2rem 1rem",
+              margin: "0rem 1rem",
               padding: "0 2.2rem",
-              ...(mode === "zen" && { margin: "11rem 1rem" }),
+             
             }}
           >
             <div className="typeContent w-[100%]  md:w-[80%] text-3xl md:text-4xl  ">

@@ -9,11 +9,14 @@ function HomePage() {
     
   return (
     <>
+    <div className='w-screen h-screen' >
     <Navbar />  
    
-    <KeyboardType />
+   <KeyboardType />
 
-    <Footer />
+   <Footer />
+    </div>
+    
     </>
   )
 }
