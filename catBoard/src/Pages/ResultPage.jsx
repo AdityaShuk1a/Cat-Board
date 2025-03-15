@@ -10,8 +10,12 @@ function ResultPage({ Speed, Accuracy }) {
   return (
     <>
       <div
-        className="w-screen flex justify-evenly gap-[30px] text-3xl md:text-7xl items-center"
-        style={{ marginTop: "11rem", padding: "0.5rem" }}
+        className="w-screen flex justify-evenly gap-[30px] text-3xl md:text-6xl items-center"
+        style={{ 
+          marginTop: "9rem",
+           padding: "0.5rem",
+           [window.innerWidth < 600 ? "marginTop" : ""]: "16rem",
+          }}
       >
         <div className="score flex flex-col w-[20%] justify-center">
           <h1 className="accuracy">Speed</h1>
