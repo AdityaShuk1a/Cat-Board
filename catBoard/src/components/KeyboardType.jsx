@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import ConfigBar from "./ConfigBar";
 import ResultPage from "../Pages/ResultPage";
 import Timer from "./Timer";
 import { use } from "react";
+import data from "../utils/Content.json";
 function KeyboardType() {
   const [mode, setMode] = useState("time");
   const [Speed, setSpeed] = useState(0);
@@ -12,9 +13,17 @@ function KeyboardType() {
   const [renderResultPage, setRenderResultPage] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const content =
-    "the quick brown fox jumps over the lazy dog and keeps running towards the endless horizon while the sun sets behind the mountains";
+  const cursorRef = useRef(null);
+  const [lineIndex, setLineIndex] = useState(0);
+  const [scrollUp, setScrollUp] = useState(0);
 
+  // console.log(data);
+
+  const contentData = data.filter((item, index) => item.time === time);
+  // console.log(contentData)
+
+  const content =
+    contentData[Math.floor(Math.random() * contentData.length)].content;
   const [charArray, setCharArray] = useState(
     content.split("").map((char, index) => ({
       id: index,
@@ -24,25 +33,51 @@ function KeyboardType() {
     }))
   );
 
+  const getContent = () => {
+    const content =
+      contentData[Math.floor(Math.random() * contentData.length)].content;
+    setCharArray(
+      content.split("").map((char, index) => ({
+        id: index,
+        char: char,
+        visited: false,
+        isCorrect: true,
+      }))
+    );
+  } 
+  useEffect(() => {
+    console.log(scrollUp);
+  }, [scrollUp]);
+  useEffect(() => {
+    getContent();
+  }, [time]);
+
   useEffect(() => {
     if (userInput.length > 0) setIsTyping(true);
-    if (userInput.length == 0) setIsTyping(false);
-    if (userInput.length >= content.length) {
-      console.log(userInput.length);
-      setSpeed((userInput.length / time) * 10);
+    if (userInput.length === 0) setIsTyping(false);
+  
+    if (userInput.length >= charArray.length) {
+      console.log("times up userLength exceed");
+  
       const correctChars = charArray.filter((char) => char.isCorrect).length;
-      const accuracy = (correctChars / content.length) * 100;
+      const userSpeed = (correctChars / 5) / (time / 60);
+      const accuracy = (correctChars / userInput.length) * 100;
+  
+      setSpeed(userSpeed);
       setAccuracy(accuracy);
       setRenderResultPage(true);
+      setLineIndex(0);
     }
+  
     onKeyboardChange(userInput);
-    console.log(userInput);
   }, [userInput]);
-
+  
   useEffect(() => {
     const handleTabPress = (event) => {
       if (event.key === "Tab") {
         setRenderResultPage(false);
+        setLineIndex(0);
+        getContent();
         event.preventDefault(); // Prevent default tab behavior (switching focus)
         setUserInput("");
         setCharArray((prev) =>
@@ -75,13 +110,18 @@ function KeyboardType() {
     };
   }, []);
   const timesUp = () => {
-    const userSpeed = (userInput.length / time) * 10;
-    setSpeed(userSpeed);
+    console.log("times up");
+  
     const correctChars = charArray.filter((char) => char.isCorrect).length;
-    const accuracy = (correctChars / content.length) * 100;
+    const userSpeed = (correctChars / 5) / (time / 60);
+    const accuracy = (correctChars / userInput.length) * 100;
+  
+    setSpeed(userSpeed);
     setAccuracy(accuracy);
     setRenderResultPage(true);
+    setLineIndex(0);
   };
+  
   const changeTime = (newTime) => {
     setTime(newTime);
   };
@@ -126,7 +166,6 @@ function KeyboardType() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
   return (
     <>
       {renderResultPage ? (
@@ -138,7 +177,6 @@ function KeyboardType() {
           ) : (
             ""
           )}
-
           <div
             className={`mainContainer   absolute top-[40%] left-[50%]  -translate-x-1/2 -translate-y-1/2 w-[100%] text-white flex justify-center `}
             style={{
@@ -146,64 +184,78 @@ function KeyboardType() {
               padding: "0 2.2rem",
             }}
           >
-            <div className="typeContent w-[100%]  md:w-[80%] text-3xl md:text-4xl  ">
+            <div className=" typeContent w-[100%]  h-[20vh]   md:w-[80%] text-3xl md:text-4xl  ">
               {isTyping ? <Timer Time={time} timesUp={timesUp} /> : ""}
-              {charArray.map((item, key) => {
-                if (item.id === userInput.length - 1) {
-                  return (
-                    <>
-                      <span
-                        key={key}
-                        className={`${
-                          item.isCorrect ? "text-amber-200" : "text-red-500"
-                        }
+              <div className="paragraphContainer  relative  ">
+                <div
+                  className="w-full h-full   overflow-hidden "
+                  style={{
+                    PointerEvent: "none",
+                    // transform: `translateY(-${lineIndex * 3}rem)`,
+                  }}
+                >
+                  {charArray.map((item, key) => {
+                    if (item.id === userInput.length - 1) {
+                      return (
+                        <>
+                          <span
+                            key={key}
+                            className={`${
+                              item.isCorrect ? "text-amber-200" : "text-red-500"
+                            }
+                
                    `}
-                      >
-                        {item.char}
-                      </span>
-                      <span
-                        className={`cursorPointer ${
-                          isTyping ? "opacity-[1]" : "opacity-[0]"
-                        }`}
-                      >
-                        |
-                      </span>
-                    </>
-                  );
-                } else if (
-                  isTyping &&
-                  item.id === 0 &&
-                  item.id === userInput.length
-                ) {
-                  return (
-                    <>
-                      <span className="cursorPointer">|</span>
-                      <span
-                        key={key}
-                        className={`${item.isCorrect ? "" : "text-red-500"}
+                          >
+                            {item.char}
+                          </span>
+                          <span
+                            ref={cursorRef}
+                            className={`cursorPointer ${
+                              isTyping ? "opacity-[1]" : "opacity-[0]"
+                            }`}
+                          >
+                            |
+                          </span>
+                        </>
+                      );
+                    } else if (
+                      isTyping &&
+                      item.id === 0 &&
+                      item.id === userInput.length
+                    ) {
+                      return (
+                        <>
+                          <span ref={cursorRef} className="cursorPointer">
+                            |
+                          </span>
+                          <span
+                            key={key}
+                            className={`${item.isCorrect ? "" : "text-red-500"}
                    `}
-                      >
-                        {item.char}
-                      </span>
-                    </>
-                  );
-                } else {
-                  return (
-                    <span
-                      key={key}
-                      className={`${
-                        item.isCorrect && item.id < userInput.length
-                          ? "text-amber-200"
-                          : item.isCorrect
-                          ? ""
-                          : "text-red-500"
-                      }`}
-                    >
-                      {item.char}
-                    </span>
-                  );
-                }
-              })}
+                          >
+                            {item.char}
+                          </span>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <span
+                          key={key}
+                          className={`${
+                            item.isCorrect && item.id < userInput.length
+                              ? "text-amber-200"
+                              : item.isCorrect
+                              ? ""
+                              : "text-red-500"
+                          }`}
+                        >
+                          {item.char}
+                        </span>
+                      );
+                    }
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </>
