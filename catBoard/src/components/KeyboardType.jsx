@@ -34,6 +34,7 @@ function KeyboardType() {
   );
 
   const getContent = () => {
+    const contentData = data.filter((item, index) => item.time === time);
     const content =
       contentData[Math.floor(Math.random() * contentData.length)].content;
     setCharArray(
