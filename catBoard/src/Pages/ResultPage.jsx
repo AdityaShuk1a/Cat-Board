@@ -11,7 +11,7 @@ function ResultPage({ Speed, Accuracy }) {
   useEffect(() => {
     const emojiOptions = [
       { emoji: "🤓", name: "nerd", range: [0, 50] },
-      { emoji: "🦁", name: "beat", range: [60, 70] },
+      { emoji: "🦁", name: "beast", range: [60, 70] },
       { emoji: "😈", name: "devil", range: [71, 90] },
       { emoji: "🗿", name: "sigma", range: [91, Infinity] }
     ];
