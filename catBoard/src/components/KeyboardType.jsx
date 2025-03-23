@@ -4,82 +4,114 @@ import ConfigBar from "./ConfigBar";
 import ResultPage from "../Pages/ResultPage";
 import Timer from "./Timer";
 import { use } from "react";
-import data from "../utils/Content.json";
+import Timedata from "../utils/Content.json";
+import wordData from "../utils/ContentWordType.json";
 function KeyboardType() {
   const [mode, setMode] = useState("time");
+  const [wordElapsedTime, setWordElapsedTime] = useState(0);
   const [Speed, setSpeed] = useState(0);
   const [Accuracy, setAccuracy] = useState(0);
   const [time, setTime] = useState(15);
   const [renderResultPage, setRenderResultPage] = useState(false);
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const cursorRef = useRef(null);
+  const [charArray, setCharArray] = useState([]);
   const [lineIndex, setLineIndex] = useState(0);
-  const [scrollUp, setScrollUp] = useState(0);
 
-  // console.log(data);
+  const changeTime = (newTime) => {
+    console.log(newTime);
+    setTime(newTime);
+  };
+  const getContent = (time) => {
+    if (mode === "time") {
+      console.log("time = " + time, " function called");
+      const contentData = Timedata.filter((item, index) => item.time === time);
+      const content =
+        contentData[Math.floor(Math.random() * contentData.length)].content;
+      setCharArray(
+        content.split("").map((char, index) => ({
+          id: index,
+          char: char,
+          visited: false,
+          isCorrect: true,
+        }))
+      );
+    } else if (mode === "word") {
+      console.log("time = " + time, " function called");
+      const contentData = wordData.filter((item, index) => item.len === time);
+      const content =
+        contentData[Math.floor(Math.random() * contentData.length)].Content;
+      console.log(contentData);
+      setCharArray(
+        content.split("").map((char, index) => ({
+          id: index,
+          char: char,
+          visited: false,
+          isCorrect: true,
+        }))
+      );
+    }
+  };
 
-  const contentData = data.filter((item, index) => item.time === time);
-  // console.log(contentData)
-
-  const content =
-    contentData[Math.floor(Math.random() * contentData.length)].content;
-  const [charArray, setCharArray] = useState(
-    content.split("").map((char, index) => ({
-      id: index,
-      char: char,
-      visited: false,
-      isCorrect: true,
-    }))
-  );
-
-  const getContent = () => {
-    const contentData = data.filter((item, index) => item.time === time);
-    const content =
-      contentData[Math.floor(Math.random() * contentData.length)].content;
-    setCharArray(
-      content.split("").map((char, index) => ({
-        id: index,
-        char: char,
-        visited: false,
-        isCorrect: true,
-      }))
-    );
-  } 
+  // this i have to check. time is not stopping even after the test has ended
   useEffect(() => {
-    console.log(scrollUp);
-  }, [scrollUp]);
+    let elapsedTime;
+    if (isTyping) {
+      elapsedTime = setInterval(() => {
+        setWordElapsedTime((prev) => prev + 1);
+      }, 1 * 1000);
+    }
+    return () => {
+      if (elapsedTime) clearInterval(elapsedTime);
+    };
+  }, [isTyping]);
   useEffect(() => {
-    getContent();
-  }, [time]);
+    console.log("time in useEffect " + time);
+    getContent(time);
+  }, [time, mode]);
 
   useEffect(() => {
     if (userInput.length > 0) setIsTyping(true);
     if (userInput.length === 0) setIsTyping(false);
-  
+
     if (userInput.length >= charArray.length) {
       console.log("times up userLength exceed");
-  
-      const correctChars = charArray.filter((char) => char.isCorrect).length;
-      const userSpeed = (correctChars / 5) / (time / 60);
-      const accuracy = (correctChars / userInput.length) * 100;
-  
-      setSpeed(userSpeed);
-      setAccuracy(accuracy);
-      setRenderResultPage(true);
-      setLineIndex(0);
+      if (mode === "word") {
+        const correctChars = charArray.filter((char) => char.isCorrect).length;
+        console.log(wordElapsedTime);
+        const userSpeed = parseFloat(
+          (charArray.length - correctChars) / 5 / wordElapsedTime
+        ); // yaha issue nhi ha
+        const accuracy = (correctChars / charArray.length) * 100;
+        setSpeed(userSpeed);
+        setAccuracy(accuracy);
+        setRenderResultPage(true);
+        setLineIndex(0);
+      } else {
+        const correctChars = charArray.filter((char) => char.isCorrect).length;
+        const userSpeed = parseFloat((correctChars / time) * 10);
+        const accuracy = (correctChars / charArray.length) * 100;
+        setSpeed(userSpeed);
+        setAccuracy(accuracy);
+        setRenderResultPage(true);
+        setLineIndex(0);
+      }
     }
-  
+
     onKeyboardChange(userInput);
   }, [userInput]);
-  
+
   useEffect(() => {
     const handleTabPress = (event) => {
       if (event.key === "Tab") {
+        event.preventDefault();
+        console.log(time);
         setRenderResultPage(false);
         setLineIndex(0);
-        getContent();
-        event.preventDefault(); // Prevent default tab behavior (switching focus)
+        setTime((prevTime) => {
+          getContent(prevTime);
+          return prevTime;
+        });
         setUserInput("");
         setCharArray((prev) =>
           prev.map((obj) => ({
@@ -111,21 +143,21 @@ function KeyboardType() {
     };
   }, []);
   const timesUp = () => {
-    console.log("times up");
-  
-    const correctChars = charArray.filter((char) => char.isCorrect).length;
-    const userSpeed = (correctChars / 5) / (time / 60);
-    const accuracy = (correctChars / userInput.length) * 100;
-  
-    setSpeed(userSpeed);
-    setAccuracy(accuracy);
-    setRenderResultPage(true);
-    setLineIndex(0);
+    if (mode === "time") {
+      console.log("times up");
+
+      const correctChars = charArray.filter((char) => char.isCorrect).length;
+      console.log(correctChars);
+      const userSpeed = parseFloat((correctChars / time) * 10);
+      const accuracy = (correctChars / charArray.length) * 100;
+
+      setSpeed(userSpeed);
+      setAccuracy(accuracy);
+      setRenderResultPage(true);
+      setLineIndex(0);
+    }
   };
-  
-  const changeTime = (newTime) => {
-    setTime(newTime);
-  };
+
   const changeMode = (newMode) => {
     console.log(newMode);
     setMode(newMode);
@@ -186,7 +218,11 @@ function KeyboardType() {
             }}
           >
             <div className=" typeContent w-[100%]  h-[20vh]   md:w-[80%] text-3xl md:text-4xl  ">
-              {isTyping ? <Timer Time={time} timesUp={timesUp} /> : ""}
+              {isTyping && mode == "time" ? (
+                <Timer Time={time} timesUp={timesUp} />
+              ) : (
+                ""
+              )}
               <div className="paragraphContainer  relative  ">
                 <div
                   className="w-full h-full   overflow-hidden "
@@ -210,7 +246,6 @@ function KeyboardType() {
                             {item.char}
                           </span>
                           <span
-                            ref={cursorRef}
                             className={`cursorPointer ${
                               isTyping ? "opacity-[1]" : "opacity-[0]"
                             }`}
@@ -226,13 +261,12 @@ function KeyboardType() {
                     ) {
                       return (
                         <>
-                          <span ref={cursorRef} className="cursorPointer">
-                            |
-                          </span>
+                          <span className="cursorPointer">|</span>
                           <span
                             key={key}
-                            className={`${item.isCorrect ? "" : "text-red-500"}
-                   `}
+                            className={`${
+                              item.isCorrect ? "" : "text-red-500"
+                            }`}
                           >
                             {item.char}
                           </span>

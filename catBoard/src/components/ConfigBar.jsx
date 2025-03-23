@@ -31,19 +31,19 @@ const ConfigBar = ({ changeTime, changeMode }) => {
               }}
             >
               <div
-                className="hover:text-gray-500"
+                className={`hover:text-gray-500 ${mode == "time" ? "text-yellow-600" : ""}`}
                 onClick={() => setMode("time")}
               >
                 time
               </div>
               <div
-                className="hover:text-gray-500"
+                className={`"hover:text-gray-500" ${mode == "word" ? "text-yellow-600" : ""}`}
                 onClick={() => setMode("word")}
               >
                 word
               </div>
               <div
-                className="hover:text-gray-500"
+                className={`hover:text-gray-500 ${mode == "zen" ? "text-yellow-600" : ""}`}
                 onClick={() => setMode("zen")}
               >
                 zen
