@@ -173,13 +173,14 @@ function KeyboardType() {
   };
   useEffect(() => {
     const handleKeyDown = (e) => {
+      console.log(e.key);
       if (
         e.key != "Tab" &&
         e.key != "Ecs" &&
         e.key != "Control" &&
         e.key != "Alt" &&
         e.key != "Shift" &&
-        e.key != "Capslock" &&
+        e.key != "CapsLock" &&
         e.key != "Meta" &&
         e.key != "Enter" &&
         e.key != "Control + Alt" &&
