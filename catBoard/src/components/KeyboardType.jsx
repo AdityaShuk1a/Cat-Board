@@ -79,16 +79,21 @@ function KeyboardType() {
 
   // this i have to check. time is not stopping even after the test has ended
   useEffect(() => {
-    let elapsedTime;
-    if (isTyping) {
-      elapsedTime = setInterval(() => {
-        setWordElapsedTime((prev) => prev + 1);
-      }, 1 * 1000);
-    }
-    return () => {
-      if (elapsedTime) clearInterval(elapsedTime);
-    };
-  }, [isTyping]);
+  if (isTyping && mode === "word") {
+    const interval = setInterval(() => {
+      if(renderResultPage){
+        clearInterval(interval)
+      }
+      setWordElapsedTime((prev) => {
+        console.log(prev + 1); 
+        return prev + 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }
+}, [isTyping, mode]);
+
   useEffect(() => {
     // console.log("time in useEffect " + time);
     getContent(time);
@@ -103,10 +108,8 @@ function KeyboardType() {
       setShift(0)
       if (mode === "word") {
         const correctChars = charArray.filter((char) => char.isCorrect).length;
-        // console.log(wordElapsedTime);
-        const userSpeed = parseFloat(
-          (charArray.length - correctChars) / 5 / wordElapsedTime
-        ); // yaha issue nhi ha
+        console.log(wordElapsedTime);
+        const userSpeed = parseFloat((time) / parseFloat(wordElapsedTime / 60)); // yaha issue nhi ha
         const accuracy = (correctChars / charArray.length) * 100;
         setSpeed(userSpeed);
         setAccuracy(accuracy);
@@ -114,7 +117,7 @@ function KeyboardType() {
         setLineIndex(0);
       } else {
         const correctChars = charArray.filter((char) => char.isCorrect).length;
-        const userSpeed = parseFloat((correctChars / time) * 10);
+        const userSpeed = parseFloat((correctChars / parseFloat(time / 60)));
         const accuracy = (correctChars / charArray.length) * 100;
         setSpeed(userSpeed);
         setAccuracy(accuracy);
@@ -174,7 +177,7 @@ function KeyboardType() {
 
       const correctChars = charArray.filter((char) => char.isCorrect).length;
       console.log(correctChars);
-      const userSpeed = parseFloat((correctChars / time) * 10);
+      const userSpeed = parseFloat((correctChars / parseFloat(time / 60)));
       const accuracy = (correctChars / charArray.length) * 100;
 
       setSpeed(userSpeed);
@@ -229,8 +232,8 @@ function KeyboardType() {
   }, []);
   return (
     <>
-      {renderResultPage ? (
-        <ResultPage Speed={Speed} Accuracy={Accuracy} />
+      {renderResultPage && Speed != 0? (
+        <ResultPage Speed={Speed} Accuracy={Accuracy} mode={mode} />
       ) : (
         <>
           {!isTyping && mode != "zen" ? (
@@ -245,7 +248,7 @@ function KeyboardType() {
               padding: "0 2.2rem",
             }}
           >
-            <div className=" typeContent w-[100%]  h-[160px] overflow-hidden md:w-[80%] text-3xl md:text-4xl  ">
+            <div className={` typeContent w-[100%]  ${mode == "word" ? "h-[160px]" :"h-[260px]" } overflow-hidden md:w-[80%] text-3xl md:text-4xl`}>
               {isTyping && mode == "time" ? (
                 <Timer Time={time} timesUp={timesUp} />
               ) : (
