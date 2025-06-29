@@ -17,14 +17,38 @@ function KeyboardType() {
   const [isTyping, setIsTyping] = useState(false);
   const [charArray, setCharArray] = useState([]);
   const [lineIndex, setLineIndex] = useState(0);
+  const cursor = useRef(null);
+  const paragraph = useRef(null);
+  const [shift, setShift] = useState(0);
+
+  useEffect(() => {
+  if (cursor.current) {
+    let top = cursor.current.getBoundingClientRect().y
+    
+    if (top > 373 && mode == 'word') {
+      // Your conditional logic here
+      console.log(top);
+      const newShift = shift - 50;
+      setShift(newShift);
+    }else{
+      if(top > 520){
+        const newShift = shift - 50;
+        setShift(newShift);
+      }
+    }
+    console.log(paragraph.current.style)
+    console.log(top);
+  }
+}, [userInput]);
+
 
   const changeTime = (newTime) => {
-    console.log(newTime);
+    // console.log(newTime);
     setTime(newTime);
   };
   const getContent = (time) => {
     if (mode === "time") {
-      console.log("time = " + time, " function called");
+      // console.log("time = " + time, " function called");
       const contentData = Timedata.filter((item, index) => item.time === time);
       const content =
         contentData[Math.floor(Math.random() * contentData.length)].content;
@@ -37,11 +61,11 @@ function KeyboardType() {
         }))
       );
     } else if (mode === "word") {
-      console.log("time = " + time, " function called");
+      // console.log("time = " + time, " function called");
       const contentData = wordData.filter((item, index) => item.len === time);
       const content =
         contentData[Math.floor(Math.random() * contentData.length)].Content;
-      console.log(contentData);
+      // console.log(contentData);
       setCharArray(
         content.split("").map((char, index) => ({
           id: index,
@@ -66,7 +90,7 @@ function KeyboardType() {
     };
   }, [isTyping]);
   useEffect(() => {
-    console.log("time in useEffect " + time);
+    // console.log("time in useEffect " + time);
     getContent(time);
   }, [time, mode]);
 
@@ -75,10 +99,11 @@ function KeyboardType() {
     if (userInput.length === 0) setIsTyping(false);
 
     if (userInput.length >= charArray.length) {
-      console.log("times up userLength exceed");
+      // console.log("times up userLength exceed");
+      setShift(0)
       if (mode === "word") {
         const correctChars = charArray.filter((char) => char.isCorrect).length;
-        console.log(wordElapsedTime);
+        // console.log(wordElapsedTime);
         const userSpeed = parseFloat(
           (charArray.length - correctChars) / 5 / wordElapsedTime
         ); // yaha issue nhi ha
@@ -105,8 +130,9 @@ function KeyboardType() {
     const handleTabPress = (event) => {
       if (event.key === "Tab") {
         event.preventDefault();
-        console.log(time);
+        // console.log(time);
         setRenderResultPage(false);
+        setShift(0);
         setLineIndex(0);
         setTime((prevTime) => {
           getContent(prevTime);
@@ -132,7 +158,7 @@ function KeyboardType() {
   useEffect(() => {
     const handleShiftEnter = (event) => {
       if (event.key === "Enter" && event.shiftKey) {
-        changeMode("time");
+        changeMode("time"); 
       }
     };
 
@@ -152,6 +178,7 @@ function KeyboardType() {
       const accuracy = (correctChars / charArray.length) * 100;
 
       setSpeed(userSpeed);
+      setShift(0);
       setAccuracy(accuracy);
       setRenderResultPage(true);
       setLineIndex(0);
@@ -218,17 +245,21 @@ function KeyboardType() {
               padding: "0 2.2rem",
             }}
           >
-            <div className=" typeContent w-[100%]  h-[20vh]   md:w-[80%] text-3xl md:text-4xl  ">
+            <div className=" typeContent w-[100%]  h-[160px] overflow-hidden md:w-[80%] text-3xl md:text-4xl  ">
               {isTyping && mode == "time" ? (
                 <Timer Time={time} timesUp={timesUp} />
               ) : (
                 ""
               )}
-              <div className="paragraphContainer  relative  ">
+              {console.log(shift)}
+              <div ref={paragraph} className={`paragraphContainer text-justify  leading-12.5  flex justify-center relative  `}
+                style={{ top: `${shift}px` }}
+              >
                 <div
-                  className="w-full h-full   overflow-hidden "
+                  className="w-[75%] h-[1000px]  overflow-hidden "
                   style={{
-                    PointerEvent: "none",
+                    
+                    PointerEvent: "none"
                     // transform: `translateY(-${lineIndex * 3}rem)`,
                   }}
                 >
@@ -246,8 +277,9 @@ function KeyboardType() {
                           >
                             {item.char}
                           </span>
-                          <span
-                            className={`cursorPointer ${
+                          
+                          <span ref={cursor}
+                            className={`cursorPointer  ${
                               isTyping ? "opacity-[1]" : "opacity-[0]"
                             }`}
                           >
@@ -262,7 +294,7 @@ function KeyboardType() {
                     ) {
                       return (
                         <>
-                          <span className="cursorPointer">|</span>
+                          <span ref={cursor} className="cursorPointer">|</span>
                           <span
                             key={key}
                             className={`${
