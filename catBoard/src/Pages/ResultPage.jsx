@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 
-function ResultPage({ Speed, Accuracy, mode }) {
+function ResultPage({ Speed, Accuracy, mode , time}) {
   const [speed, setSpeed] = useState((Speed?.toString() || "0").slice(0, 2));
   const [accuracy, setAccuracy] = useState(
     Accuracy === 100 ? "100" : (Accuracy?.toString() || "0").slice(0, 2)
@@ -56,8 +56,8 @@ function ResultPage({ Speed, Accuracy, mode }) {
               </div>
               <div className="text-sm text-[#c0a88c]" style={{ marginTop: "1.5rem" }}>
                 <p>test type</p>
-                <p>time 15</p>
-                <p>english 25k</p>
+                <p>{mode} {time}</p>
+                
               </div>
             </div>
 
@@ -71,16 +71,16 @@ function ResultPage({ Speed, Accuracy, mode }) {
               >
                 <p className="text-sm">[Performance graph placeholder]</p>
               </div>
-
+                {/* {grid grid-cols-3} */}
               <div
-                className="grid grid-cols-3 text-center text-sm"
+                className=" text-center text-sm"
                 style={{ marginTop: "1.5rem", gap: "1.5rem" }}
               >
                 <div>
                   <p className="uppercase text-[#f58f7c]">raw</p>
-                  <p className="text-xl md:text-4xl font-bold text-[#f4ceb0]">54</p>
+                  <p className="text-xl md:text-4xl font-bold text-[#f4ceb0]">{speed}</p>
                 </div>
-                <div>
+                {/* <div>
                   <p className="uppercase text-[#f58f7c]">characters</p>
                   <p className="text-lg md:text-3xl font-bold text-[#f4ceb0]">
                     66 / 1 / 0 / 0
@@ -89,7 +89,7 @@ function ResultPage({ Speed, Accuracy, mode }) {
                 <div>
                   <p className="uppercase text-[#f58f7c]">consistency</p>
                   <p className="text-xl md:text-4xl font-bold text-[#f4ceb0]">59%</p>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -106,8 +106,8 @@ function ResultPage({ Speed, Accuracy, mode }) {
                 style={{ marginTop: "1.5rem" }}
               >
                 <p>time</p>
-                <p className="text-xl md:text-3xl font-bold text-[#f4ceb0]">15s</p>
-                <p>00:00:15 session</p>
+                <p className="text-xl md:text-3xl font-bold text-[#f4ceb0]">{mode == "word" ? time + " words" : time + "s"}</p>
+                {/* <p>00:00:15 session</p> */}
               </div>
             </div>
           </div>

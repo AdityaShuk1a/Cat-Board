@@ -221,6 +221,7 @@ function KeyboardType() {
       }))
     );
   };
+  
   useEffect(() => {
     const handleKeyDown = (e) => {
       // console.log(e.key);
@@ -257,8 +258,9 @@ function KeyboardType() {
   }, []);
   return (
     <>
-      {renderResultPage && Speed != 0? (
-        <ResultPage Speed={Speed} Accuracy={Accuracy} mode={mode} />
+    
+      {renderResultPage && Accuracy? (
+        <ResultPage Speed={Speed} Accuracy={Accuracy} mode={mode} time={time} />
       ) : (
         <>
           {!isTyping && mode != "zen" ? (
