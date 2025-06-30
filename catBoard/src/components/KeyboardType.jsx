@@ -20,26 +20,34 @@ function KeyboardType() {
   const cursor = useRef(null);
   const paragraph = useRef(null);
   const [shift, setShift] = useState(0);
+  const [cursorTop, setCursorTop] = useState(0);
 
   useEffect(() => {
   if (cursor.current) {
-    let top = cursor.current.getBoundingClientRect().y
-    
-    if (top > 373 && mode == 'word') {
-      // Your conditional logic here
-      console.log(top);
-      const newShift = shift - 50;
-      setShift(newShift);
-    }else{
-      if(top > 520){
+    const top = cursor.current.getBoundingClientRect().y;
+
+    if (cursorTop !== top) {
+      setCursorTop(top);
+
+      const newIndex = lineIndex + 1;
+      setLineIndex(newIndex);
+
+      if (newIndex === 3) {
         const newShift = shift - 50;
         setShift(newShift);
+
+        // Reset the lineIndex after shifting
+        setLineIndex(newIndex - 2);
       }
+
+      console.log("Line index =", newIndex);
+      console.log("Cursor top =", top);
     }
-    console.log(paragraph.current.style)
-    console.log(top);
+
+    console.log("Stored cursorTop =", cursorTop);
   }
 }, [userInput]);
+
 
 
   const changeTime = (newTime) => {
@@ -248,7 +256,7 @@ function KeyboardType() {
               padding: "0 2.2rem",
             }}
           >
-            <div className={` typeContent w-[100%]  ${mode == "word" ? "h-[160px]" :"h-[260px]" } overflow-hidden md:w-[80%] text-3xl md:text-4xl`}>
+            <div className={` typeContent absolute top-[50%] w-[100%]  ${mode == "word" ? "h-[160px]" :"h-[260px]" } overflow-hidden md:w-[80%] text-3xl md:text-4xl`}>
               {isTyping && mode == "time" ? (
                 <Timer Time={time} timesUp={timesUp} />
               ) : (

@@ -19,7 +19,7 @@ function Footer() {
       <div
         className="w-screen fixed bottom-0 flex flex-col md:flex-row justify-center items-center gap-3"
         style={{
-          marginBottom: "4rem",
+          marginBottom: "1.5rem",
         }}
       >
         <div>ShortCuts:</div>

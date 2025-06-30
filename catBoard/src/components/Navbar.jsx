@@ -5,7 +5,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className="flex w-screen justify-between items-center text-white font-semibold text-2xl md:text-4xl"
+        className="flex w-screen justify-between items-center text-white font-semibold text-2xl md:text-3xl"
         style={{
           padding: "2rem 2rem",
         }}
