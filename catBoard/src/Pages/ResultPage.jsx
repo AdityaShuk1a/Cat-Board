@@ -47,7 +47,7 @@ function ResultPage({ Speed, Accuracy, mode }) {
               style={{ marginBottom: "2rem", marginTop: "1rem" }}
             >
               <div style={{ marginBottom: "1.5rem" }}>
-                <p className="text-[#f58f7c] uppercase text-sm">{mode == "word" ? "wpm" : "cpm"}</p>
+                <p className="text-[#f58f7c] uppercase text-sm">wpm</p>
                 <p className="text-5xl md:text-7xl font-bold">{speed}</p>
               </div>
               <div style={{ marginBottom: "1.5rem" }}>

@@ -34,26 +34,26 @@ function KeyboardType() {
     if (key !== "Backspace") {
       setCursorTop(top);
       const newIndex = lineIndex + 1;
-      console.log("lineIndex =", lineIndex);
+      // console.log("lineIndex =", lineIndex);
       setLineIndex(newIndex);
 
       if (newIndex === 3) {
         setShift(shift - 50);
         setLineIndex(newIndex - 2);
-        console.log("lineIndex =", lineIndex);
+        // console.log("lineIndex =", lineIndex);
       }
     } else {
       
       setShift(shift + 50);
       // setLineIndex(lineIndex - 1)
-      console.log("lineIndex =", lineIndex);
+      // console.log("lineIndex =", lineIndex);
       
     }
 
-    console.log("key =", key);
-    console.log("lineIndex =", lineIndex);
-    console.log("cursorTop =", cursorTop);
-    console.log("top =", top);
+  //   console.log("key =", key);
+  //   console.log("lineIndex =", lineIndex);
+  //   console.log("cursorTop =", cursorTop);
+  //   console.log("top =", top);
   }
 }, [userInput]); // or add `key` here if it tracks typing more precisely
 
@@ -135,7 +135,8 @@ function KeyboardType() {
         setLineIndex(0);
       } else {
         const correctChars = charArray.filter((char) => char.isCorrect).length;
-        const userSpeed = parseFloat((correctChars / parseFloat(time / 60)));
+        const words = userInput.split(" ")
+      const userSpeed = parseFloat((words.length / parseFloat(time / 60)));
         const accuracy = (correctChars / charArray.length) * 100;
         setSpeed(userSpeed);
         setAccuracy(accuracy);
@@ -190,12 +191,13 @@ function KeyboardType() {
     };
   }, []);
   const timesUp = () => {
+    
     if (mode === "time") {
       console.log("times up");
-
       const correctChars = charArray.filter((char) => char.isCorrect).length;
-      console.log(correctChars);
-      const userSpeed = parseFloat((correctChars / parseFloat(time / 60)));
+      const words = userInput.split(" ")
+      
+      const userSpeed = parseFloat((words.length / parseFloat(time / 60)));
       const accuracy = (correctChars / charArray.length) * 100;
 
       setSpeed(userSpeed);
