@@ -21,32 +21,42 @@ function KeyboardType() {
   const paragraph = useRef(null);
   const [shift, setShift] = useState(0);
   const [cursorTop, setCursorTop] = useState(0);
+  const [key, setKey] = useState(null)
+
 
   useEffect(() => {
-  if (cursor.current) {
-    const top = cursor.current.getBoundingClientRect().y;
+  if (!cursor.current) return;
+  const top = cursor.current.getBoundingClientRect().y;
 
-    if (cursorTop !== top) {
+  if (cursorTop != top) {
+    
+
+    if (key !== "Backspace") {
       setCursorTop(top);
-
       const newIndex = lineIndex + 1;
+      console.log("lineIndex =", lineIndex);
       setLineIndex(newIndex);
 
       if (newIndex === 3) {
-        const newShift = shift - 50;
-        setShift(newShift);
-
-        // Reset the lineIndex after shifting
+        setShift(shift - 50);
         setLineIndex(newIndex - 2);
+        console.log("lineIndex =", lineIndex);
       }
-
-      console.log("Line index =", newIndex);
-      console.log("Cursor top =", top);
+    } else {
+      
+      setShift(shift + 50);
+      // setLineIndex(lineIndex - 1)
+      console.log("lineIndex =", lineIndex);
+      
     }
 
-    console.log("Stored cursorTop =", cursorTop);
+    console.log("key =", key);
+    console.log("lineIndex =", lineIndex);
+    console.log("cursorTop =", cursorTop);
+    console.log("top =", top);
   }
-}, [userInput]);
+}, [userInput]); // or add `key` here if it tracks typing more precisely
+
 
 
 
@@ -93,7 +103,7 @@ function KeyboardType() {
         clearInterval(interval)
       }
       setWordElapsedTime((prev) => {
-        console.log(prev + 1); 
+        // console.log(prev + 1); 
         return prev + 1;
       });
     }, 1000);
@@ -211,7 +221,12 @@ function KeyboardType() {
   };
   useEffect(() => {
     const handleKeyDown = (e) => {
-      console.log(e.key);
+      // console.log(e.key);
+      if(e.key == "Backspace"){
+        setKey("Backspace");
+      }else{
+        setKey("none");
+      }
       if (
         e.key != "Tab" &&
         e.key != "Ecs" &&
@@ -256,12 +271,13 @@ function KeyboardType() {
               padding: "0 2.2rem",
             }}
           >
-            <div className={` typeContent absolute top-[50%] w-[100%]  ${mode == "word" ? "h-[160px]" :"h-[260px]" } overflow-hidden md:w-[80%] text-3xl md:text-4xl`}>
-              {isTyping && mode == "time" ? (
+            {isTyping && mode == "time" ? (
                 <Timer Time={time} timesUp={timesUp} />
               ) : (
                 ""
               )}
+            <div className={` typeContent absolute top-[50%] w-[100%]  ${mode == "word" ? "h-[160px]" :"h-[260px]" } overflow-hidden md:w-[80%] text-3xl md:text-4xl`}>
+              
               {console.log(shift)}
               <div ref={paragraph} className={`paragraphContainer text-justify  leading-12.5  flex justify-center relative  `}
                 style={{ top: `${shift}px` }}

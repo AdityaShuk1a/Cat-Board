@@ -19,7 +19,7 @@ function Timer({ Time, timesUp }) {
   return (
     <>
       <div
-        className="mainContainer w-screen flex justify-start "
+        className="mainContainer w-screen text-3xl flex justify-start "
         style={{
           padding: "2rem 1rem",
         }}
